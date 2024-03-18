@@ -9,7 +9,7 @@ import {
     typeRouter,
     testimonialsRouter,
     teamRouter,
-} from "./api";
+} from "./routes";
 import { createTables } from "./database";
 
 export const app = express();
@@ -20,10 +20,6 @@ createTables();
 
 app.get("/", (_, res) => {
     res.json(routes);
-});
-
-app.get("/wtf", (_, res) => {
-    res.json("F you");
 });
 
 app.use("/info", infoRouter);
