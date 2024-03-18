@@ -22,6 +22,10 @@ app.get("/", (_, res) => {
     res.json(routes);
 });
 
+app.get("/wtf", (_, res) => {
+    res.json("F you");
+});
+
 app.use("/info", infoRouter);
 app.use("/courses", coursesRouter);
 app.use("/events", eventRouter);
