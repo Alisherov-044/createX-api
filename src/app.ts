@@ -22,14 +22,14 @@ app.get("/", (_, res) => {
     res.json(routes);
 });
 
-app.use("/info", infoRouter);
-app.use("/courses", coursesRouter);
-app.use("/events", eventRouter);
-app.use("/categories", categoryRouter);
-app.use("/posts", postsRouter);
-app.use("/testimonials", testimonialsRouter);
-app.use("/team", teamRouter);
-app.use("/type", typeRouter);
+app.use("/api/info", infoRouter);
+app.use("/api/courses", coursesRouter);
+app.use("/api/events", eventRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/posts", postsRouter);
+app.use("/api/testimonials", testimonialsRouter);
+app.use("/api/team", teamRouter);
+app.use("/api/type", typeRouter);
 
 app.listen(PORT, () => {
     console.log(`server is running on port http://localhost:${PORT}/`);
