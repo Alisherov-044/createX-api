@@ -1,13 +1,20 @@
 import express from "express";
 import { PORT, routes } from "./utils";
-import { infoRouter } from "./api";
+import {
+    infoRouter,
+    coursesRouter,
+    eventRouter,
+    categoryRouter,
+    postsRouter,
+    typeRouter,
+    testimonialsRouter,
+    teamRouter,
+} from "./api";
 import { createTables } from "./database";
-import { coursesRouter } from "./api/courses";
 
 export const app = express();
 
 app.use(express.json());
-app.use(express.static("public"));
 
 createTables();
 
@@ -17,6 +24,12 @@ app.get("/", (_, res) => {
 
 app.use("/info", infoRouter);
 app.use("/courses", coursesRouter);
+app.use("/events", eventRouter);
+app.use("/categories", categoryRouter);
+app.use("/posts", postsRouter);
+app.use("/testimonials", testimonialsRouter);
+app.use("/team", teamRouter);
+app.use("/type", typeRouter);
 
 app.listen(PORT, () => {
     console.log(`server is running on port http://localhost:${PORT}/`);

@@ -1,10 +1,7 @@
-export type TRoute = {
-    route: string;
-    duty: string;
-    methods: string[];
-};
-
-export const routes: TRoute[] = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routes = void 0;
+exports.routes = [
     {
         route: "/info",
         duty: "get all or add info",
