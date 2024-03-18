@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "createx api",
   "main": "./dist/app.js",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
     "build": "tsc",
     "dev": "node --watch ./dist/app.js",
