@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     category: zod.number({ required_error: "category is required" }),
@@ -14,16 +15,15 @@ export type TCourse = typeof scheme & { id: number };
 
 export const coursesRouter: Router = Router();
 
-coursesRouter
-    .get("/", (_, res) => {
+export function coursesRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TCourse[]>("courses", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const courses = req.body;
         try {
             scheme.parse(courses);
@@ -42,8 +42,7 @@ coursesRouter
         }
     });
 
-coursesRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TCourse>("courses", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -51,17 +50,19 @@ coursesRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("courses", { id }, (error) => {
             if (error) {
                 return res
-                    .json({ message: "error accured while deleting course" })
+                    .json({
+                        message: "error accured while deleting course",
+                    })
                     .status(403);
             }
-            res.json({ message: `${id} - course delted successfully` }).status(
-                400
-            );
+            res.json({
+                message: `${id} - course delted successfully`,
+            }).status(400);
         });
     });
+}

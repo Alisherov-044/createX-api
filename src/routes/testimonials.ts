@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     image: zod.string({ required_error: "image is required" }),
@@ -13,16 +14,15 @@ export type TTestimonial = typeof scheme & { id: number };
 
 export const testimonialsRouter: Router = Router();
 
-testimonialsRouter
-    .get("/", (_, res) => {
+export function testimonialsRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TTestimonial[]>("testimonials", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const testimonials = req.body;
         try {
             scheme.parse(testimonials);
@@ -42,8 +42,7 @@ testimonialsRouter
         }
     });
 
-testimonialsRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TTestimonial>("testimonials", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -51,8 +50,7 @@ testimonialsRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("testimonials", { id }, (error) => {
             if (error) {
@@ -67,3 +65,4 @@ testimonialsRouter
             }).status(400);
         });
     });
+}

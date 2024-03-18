@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     title: zod.string({ required_error: "title is required" }),
@@ -11,23 +12,24 @@ export type TInfo = typeof scheme & { id: number };
 
 export const infoRouter: Router = Router();
 
-infoRouter
-    .get("/", (_, res) => {
+export function infoRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TInfo[]>("info", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const info = req.body;
         try {
             scheme.parse(info);
             createData("info", info, (error) => {
                 if (error) {
                     return res
-                        .json({ message: "error accured while creating info" })
+                        .json({
+                            message: "error accured while creating info",
+                        })
                         .status(403);
                 }
                 res.json(info).status(201);
@@ -37,8 +39,7 @@ infoRouter
         }
     });
 
-infoRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TInfo>("info", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -46,8 +47,7 @@ infoRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("info", { id }, (error) => {
             if (error) {
@@ -55,8 +55,9 @@ infoRouter
                     .json({ message: "error accured while deleting info" })
                     .status(403);
             }
-            res.json({ message: `${id} - info delted successfully` }).status(
-                400
-            );
+            res.json({
+                message: `${id} - info delted successfully`,
+            }).status(400);
         });
     });
+}

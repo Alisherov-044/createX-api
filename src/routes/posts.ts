@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     image: zod.string({ required_error: "image is required" }),
@@ -16,16 +17,15 @@ export type TPost = typeof scheme & { id: number };
 
 export const postsRouter: Router = Router();
 
-postsRouter
-    .get("/", (_, res) => {
+export function postsRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TPost[]>("posts", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const posts = req.body;
         try {
             scheme.parse(posts);
@@ -44,8 +44,7 @@ postsRouter
         }
     });
 
-postsRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TPost>("posts", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -53,8 +52,7 @@ postsRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("posts", { id }, (error) => {
             if (error) {
@@ -69,3 +67,4 @@ postsRouter
             }).status(400);
         });
     });
+}

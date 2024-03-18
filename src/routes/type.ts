@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     icon: zod.string({ required_error: "icon is required" }),
@@ -11,16 +12,15 @@ export type TType = typeof scheme & { id: number };
 
 export const typeRouter: Router = Router();
 
-typeRouter
-    .get("/", (_, res) => {
+export function typeRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TType[]>("type", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const type = req.body;
         try {
             scheme.parse(type);
@@ -39,8 +39,7 @@ typeRouter
         }
     });
 
-typeRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TType>("type", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -48,8 +47,7 @@ typeRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("type", { id }, (error) => {
             if (error) {
@@ -64,3 +62,4 @@ typeRouter
             }).status(400);
         });
     });
+}

@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     title: zod.string({ required_error: "title is required" }),
@@ -11,16 +12,15 @@ export type TCategory = typeof scheme & { id: number };
 
 export const categoryRouter: Router = Router();
 
-categoryRouter
-    .get("/", (_, res) => {
+export function categoryRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TCategory[]>("category", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const type = req.body;
         try {
             scheme.parse(type);
@@ -39,8 +39,7 @@ categoryRouter
         }
     });
 
-categoryRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TCategory>("category", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -48,8 +47,7 @@ categoryRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("category", { id }, (error) => {
             if (error) {
@@ -64,3 +62,4 @@ categoryRouter
             }).status(400);
         });
     });
+}

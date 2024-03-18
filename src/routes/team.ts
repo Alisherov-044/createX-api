@@ -1,6 +1,7 @@
 import * as zod from "zod";
 import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
+import type { Express } from "express";
 
 const scheme = zod.object({
     image: zod.string({ required_error: "image is required" }),
@@ -15,16 +16,15 @@ export type TTeam = typeof scheme & { id: number };
 
 export const teamRouter: Router = Router();
 
-teamRouter
-    .get("/", (_, res) => {
+export function teamRoute(app: Express) {
+    app.get("/", (_, res) => {
         getAllData<TTeam[]>("team", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    })
-    .post("/", (req, res) => {
+    }).post("/", (req, res) => {
         const team = req.body;
         try {
             scheme.parse(team);
@@ -43,8 +43,7 @@ teamRouter
         }
     });
 
-teamRouter
-    .get("/:id", (req, res) => {
+    app.get("/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TTeam>("team", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -52,8 +51,7 @@ teamRouter
             }
             res.json(data).status(200);
         });
-    })
-    .delete("/:id", (req, res) => {
+    }).delete("/:id", (req, res) => {
         const id = req.params.id;
         deleteData("team", { id }, (error) => {
             if (error) {
@@ -61,8 +59,9 @@ teamRouter
                     .json({ message: "error accured while deleting team" })
                     .status(403);
             }
-            res.json({ message: `${id} - team delted successfully` }).status(
-                400
-            );
+            res.json({
+                message: `${id} - team delted successfully`,
+            }).status(400);
         });
     });
+}
