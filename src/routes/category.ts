@@ -3,7 +3,7 @@ import { Router } from "express";
 import { createData, deleteData, getAllData, getDataById } from "../database";
 import type { Express } from "express";
 
-const scheme = zod.object({
+export const scheme = zod.object({
     title: zod.string({ required_error: "title is required" }),
     color: zod.string({ required_error: "color is required" }),
 });
