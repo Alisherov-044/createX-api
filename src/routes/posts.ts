@@ -18,14 +18,14 @@ export type TPost = typeof scheme & { id: number };
 export const postsRouter: Router = Router();
 
 export function postsRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/posts", (_, res) => {
         getAllData<TPost[]>("posts", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/posts", (req, res) => {
         const posts = req.body;
         try {
             scheme.parse(posts);
@@ -44,7 +44,7 @@ export function postsRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/posts/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TPost>("posts", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -52,7 +52,7 @@ export function postsRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/posts/:id", (req, res) => {
         const id = req.params.id;
         deleteData("posts", { id }, (error) => {
             if (error) {

@@ -17,14 +17,14 @@ export type TTeam = typeof scheme & { id: number };
 export const teamRouter: Router = Router();
 
 export function teamRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/team", (_, res) => {
         getAllData<TTeam[]>("team", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/team", (req, res) => {
         const team = req.body;
         try {
             scheme.parse(team);
@@ -43,7 +43,7 @@ export function teamRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/team/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TTeam>("team", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -51,7 +51,7 @@ export function teamRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/team/:id", (req, res) => {
         const id = req.params.id;
         deleteData("team", { id }, (error) => {
             if (error) {

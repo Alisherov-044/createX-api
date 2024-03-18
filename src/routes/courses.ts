@@ -16,14 +16,14 @@ export type TCourse = typeof scheme & { id: number };
 export const coursesRouter: Router = Router();
 
 export function coursesRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/courses", (_, res) => {
         getAllData<TCourse[]>("courses", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/courses", (req, res) => {
         const courses = req.body;
         try {
             scheme.parse(courses);
@@ -42,7 +42,7 @@ export function coursesRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/courses/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TCourse>("courses", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -50,7 +50,7 @@ export function coursesRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/courses/:id", (req, res) => {
         const id = req.params.id;
         deleteData("courses", { id }, (error) => {
             if (error) {

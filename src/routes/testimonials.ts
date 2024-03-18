@@ -15,14 +15,14 @@ export type TTestimonial = typeof scheme & { id: number };
 export const testimonialsRouter: Router = Router();
 
 export function testimonialsRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/testimonials", (_, res) => {
         getAllData<TTestimonial[]>("testimonials", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/testimonials", (req, res) => {
         const testimonials = req.body;
         try {
             scheme.parse(testimonials);
@@ -42,7 +42,7 @@ export function testimonialsRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/testimonials/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TTestimonial>("testimonials", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -50,7 +50,7 @@ export function testimonialsRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/testimonials/:id", (req, res) => {
         const id = req.params.id;
         deleteData("testimonials", { id }, (error) => {
             if (error) {

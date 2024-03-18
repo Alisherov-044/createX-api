@@ -13,14 +13,14 @@ export type TType = typeof scheme & { id: number };
 export const typeRouter: Router = Router();
 
 export function typeRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/type", (_, res) => {
         getAllData<TType[]>("type", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/type", (req, res) => {
         const type = req.body;
         try {
             scheme.parse(type);
@@ -39,7 +39,7 @@ export function typeRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/type/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TType>("type", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -47,7 +47,7 @@ export function typeRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/type/:id", (req, res) => {
         const id = req.params.id;
         deleteData("type", { id }, (error) => {
             if (error) {

@@ -13,14 +13,14 @@ export type TCategory = typeof scheme & { id: number };
 export const categoryRouter: Router = Router();
 
 export function categoryRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/categories", (_, res) => {
         getAllData<TCategory[]>("category", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/categories", (req, res) => {
         const type = req.body;
         try {
             scheme.parse(type);
@@ -39,7 +39,7 @@ export function categoryRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/categories/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TCategory>("category", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -47,7 +47,7 @@ export function categoryRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/categories/:id", (req, res) => {
         const id = req.params.id;
         deleteData("category", { id }, (error) => {
             if (error) {

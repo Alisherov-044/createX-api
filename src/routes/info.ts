@@ -13,14 +13,14 @@ export type TInfo = typeof scheme & { id: number };
 export const infoRouter: Router = Router();
 
 export function infoRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/info", (_, res) => {
         getAllData<TInfo[]>("info", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/info", (req, res) => {
         const info = req.body;
         try {
             scheme.parse(info);
@@ -39,7 +39,7 @@ export function infoRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/info/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TInfo>("info", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -47,7 +47,7 @@ export function infoRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/info/:id", (req, res) => {
         const id = req.params.id;
         deleteData("info", { id }, (error) => {
             if (error) {

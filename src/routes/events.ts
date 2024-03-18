@@ -16,14 +16,14 @@ export type TEvent = typeof scheme & { id: number };
 export const eventRouter: Router = Router();
 
 export function eventRoute(app: Express) {
-    app.get("/", (_, res) => {
+    app.get("/events", (_, res) => {
         getAllData<TEvent[]>("events", (error, data) => {
             if (error || typeof data === "undefined") {
                 return res.json({ message: "not found" }).status(404);
             }
             res.json(data).status(200);
         });
-    }).post("/", (req, res) => {
+    }).post("/events", (req, res) => {
         const events = req.body;
         try {
             scheme.parse(events);
@@ -42,7 +42,7 @@ export function eventRoute(app: Express) {
         }
     });
 
-    app.get("/:id", (req, res) => {
+    app.get("/events/:id", (req, res) => {
         const id = req.params.id;
         getDataById<TEvent>("events", { id }, (error, data) => {
             if (error || typeof data === "undefined") {
@@ -50,7 +50,7 @@ export function eventRoute(app: Express) {
             }
             res.json(data).status(200);
         });
-    }).delete("/:id", (req, res) => {
+    }).delete("/events/:id", (req, res) => {
         const id = req.params.id;
         deleteData("events", { id }, (error) => {
             if (error) {
